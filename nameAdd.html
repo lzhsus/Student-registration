@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="vue.js"></script>
+    <script src="jquery-1.12.4.js"></script>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        #box{
+          
+            margin:100px auto;
+        }
+        fieldset{
+            padding: 20px 30px;
+        }
+        legend{
+            color: red;
+        }
+        fieldset>div{
+            height: 30px;
+            line-height: 30px;
+            margin-bottom: 10px;
+        }
+        fieldset>div>input{
+            float: right;
+            width: 170px;
+            height: 100%;
+            border: 1px solid #ccc;
+            border-radius:15px;
+            padding-left: 10px;
+            outline: none;
+            margin-right: 10px;
+        }
+        label{
+            padding-left:10px;
+        }
+        button{
+            padding: 0 10px;
+            float: right;
+            height: 100%;
+            background-color: #096;
+            border-radius: 15px;
+            border: 0;
+            color: #fff;
+            margin-right: 10px;
+        }
+        fieldset>div::after{
+            content: '';
+            display: block;
+            clear: both;
+        }
+        table{
+            margin-top: 20px;
+        }
+        th,td{
+            padding: 6px 10px;
+        }
+        .bg1{
+            background-color:red;
+        }
+        .bg2{
+            background-color:yellow;
+        }
+        tbody>tr:nth-of-type(1){
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div>
+            <fieldset>
+                <legend>学生信息表登记</legend>
+                <div>
+                    <label for="">姓　名：</label>
+                    <input type="text" placeholder="学生姓名" v-model='msg.name' value="">
+                </div>
+                <div>
+                    <label for="">年　龄：</label>
+                    <input type="text" placeholder="学生年龄" v-model='msg.age' value="">
+                </div>
+                <div>
+                    <label for="">性　别：</label>
+                    <input type="text" placeholder="学生性别" v-model='msg.sex' value="">
+                </div>
+                <div>
+                    <label for="">手机号：</label>
+                    <input type="text" placeholder="学生手机号" v-model='msg.phone' value="">
+                </div>
+                <div class="tinajia">
+                        <button v-on:click='addMsg()'>添加用户信息</button>
+                </div>
+            </fieldset>
+        </div>
+ 
+        <div>
+            <table>
+               <thead>
+                    <tr :class="{'bg1':true}">
+                            <th>姓名</th>
+                            <th>年龄</th>
+                            <th>性别</th>
+                            <th>手机号</th>
+                            <th>操作</th>
+                    </tr>
+               </thead>
+                <tbody>
+                    <tr v-for="(item, index) in arr" :class="{'bg2':index%2==1,'bg1':index%2==0}" v-show="!item.cheak">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.age }}</td>
+                        <td>{{ item.sex }}</td>
+                        <td>{{ item.phone }}</td>
+                        <td>
+                            <button @click="del(index)">删除</button>
+                            <button @click="set(index)">修改</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+     var vm = new Vue({
+        el:'#box',
+        data:{
+            iShow:true,
+            msg:{
+                'name':'',
+                'age':'',
+                'sex':'',
+                'phone':''
+                
+            },
+            arr:[
+                {
+                'name':'',
+                'age':'',
+                'sex':'',
+                'phone':'',
+                }
+            ]
+        },
+        methods:{
+            addMsg:function(){
+                var pattern = /^[\u4e00-\u9fa5]{3,8}$/,
+                    str = this.msg.name;
+                if(str!=""){
+                    if(pattern.test(str)){
+                        if(this.iShow){
+                            this.arr.push(this.msg)
+                            this.msg={name:'',ags:'',sex:'',phone:''}                    
+                        }else{
+                            this.arr[biao()].name=this.msg.name
+                            this.arr[biao()].age=this.msg.age
+                            this.arr[biao()].sex=this.msg.sex
+                            this.arr[biao()].phone=this.msg.phone
+                            this.msg={name:'',ags:'',sex:'',phone:''}
+                            this.iShow=true  
+                        }
+                    }else{
+                        alert('姓名请输入3-8位字符串')
+                    }
+                }else{
+                    alert('姓名不可为空')
+                }             
+            },
+            del:function(index){
+                this.arr.splice(index,1)
+            },
+            set:function(index){
+                this.iShow=false
+                this.msg.name=this.arr[index].name
+                this.msg.age=this.arr[index].age
+                this.msg.sex=this.arr[index].sex
+                this.msg.phone=this.arr[index].phone
+                // 定义回调函数  返回对应的index
+                return biao=()=>{
+                    return index
+                };
+            }
+
+        }
+    })
+</script>
